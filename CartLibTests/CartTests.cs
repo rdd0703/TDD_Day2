@@ -76,6 +76,25 @@ namespace CartLib.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod()]
+        public void CalculateTest_一次買了整套_一二三四五集各買了一本_價格應為_375()
+        {
+            var carts = new List<CartItem>() {
+                new CartItem() { Id = 1 ,BookName = "哈利波特 第一集" ,Price = 100 ,Quantity = 1 },
+                new CartItem() { Id = 2 ,BookName = "哈利波特 第二集" ,Price = 100 ,Quantity = 1 },
+                new CartItem() { Id = 3 ,BookName = "哈利波特 第三集" ,Price = 100 ,Quantity = 1 },
+                new CartItem() { Id = 4 ,BookName = "哈利波特 第四集" ,Price = 100 ,Quantity = 1 },
+                new CartItem() { Id = 5 ,BookName = "哈利波特 第五集" ,Price = 100 ,Quantity = 1 }
+            };
+
+            var target = new Cart(carts);
+            var actual = target.Calculate();
+
+            var expected = 375;
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 
 }
