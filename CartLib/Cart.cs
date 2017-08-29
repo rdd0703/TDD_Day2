@@ -19,13 +19,23 @@ namespace CartLib
         {
             if (this._carts == null) return 0;
 
-            var discount = (100 - GetDiscount(this._carts.Count)) / 100;
 
+            var maxQuantity = this._carts.Max(d => d.Quantity);
             var price = 0;
 
-            foreach (var item in this._carts)
+            for (int i = 1; i <= maxQuantity; i++)
             {
-                price += (int)(item.Price * item.Quantity * discount);
+                //組合項目
+                var combineCarts = this._carts.Where(d => d.Quantity > 0).ToList();
+                //取得該組合的折扣
+                var discount = (100 - GetDiscount(combineCarts.Count)) / 100;
+
+                //計算該組合的價格
+                foreach (var item in combineCarts)
+                {
+                    price += (int)(item.Price * 1 * discount);
+                    item.Quantity--;
+                }
             }
 
             return price;
