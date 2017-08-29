@@ -19,13 +19,15 @@ namespace CartLib
         {
             if (this._carts == null) return 0;
 
+            var lstPrice = new List<int>();
+
             //平均組合計算法
-            int price1 = GetAvgPrice(this._carts);
+            lstPrice.Add(GetAvgCombinePrice(this._carts));
             //一般依序計算法
-            int price2 = GetNormalPrice(this._carts);
+            lstPrice.Add(GetNormalPrice(this._carts));
 
 
-            return price1 < price2 ? price1 : price2;
+            return lstPrice.Min();
         }
 
         /// <summary>一般依序計算法</summary>
@@ -49,7 +51,7 @@ namespace CartLib
         }
 
         /// <summary>平均組合計算法</summary>
-        private int GetAvgPrice(List<CartItem> carts)
+        private int GetAvgCombinePrice(List<CartItem> carts)
         {
             var price = 0;
             var maxCombineCount = carts.Max(d => d.Quantity);
