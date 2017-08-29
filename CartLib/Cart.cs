@@ -19,23 +19,57 @@ namespace CartLib
         {
             if (this._carts == null) return 0;
 
+            //平均組合計算法
+            int price1 = GetAvgPrice(this._carts);
+            //一般依序計算法
+            int price2 = GetNormalPrice(this._carts);
 
-            var maxQuantity = this._carts.Max(d => d.Quantity);
+
+            return price1 < price2 ? price1 : price2;
+        }
+
+        /// <summary>一般依序計算法</summary>
+        private int GetNormalPrice(List<CartItem> carts)
+        {
             var price = 0;
+            var maxCombineCount = carts.Max(d => d.Quantity);
 
-            for (int i = 1; i <= maxQuantity; i++)
+            for (int i = 1; i <= maxCombineCount; i++)
             {
-                //組合項目
-                var combineCarts = this._carts.Where(d => d.Quantity > 0).ToList();
-                //取得該組合的折扣
+                var combineCarts = carts.Where(d => d.Quantity > 0).ToList();
                 var discount = (100 - GetDiscount(combineCarts.Count)) / 100;
 
-                //計算該組合的價格
                 foreach (var item in combineCarts)
                 {
                     price += (int)(item.Price * 1 * discount);
                     item.Quantity--;
                 }
+            }
+            return price;
+        }
+
+        /// <summary>平均組合計算法</summary>
+        private int GetAvgPrice(List<CartItem> carts)
+        {
+            var price = 0;
+            var maxCombineCount = carts.Max(d => d.Quantity);
+
+            var lstPrice = new List<double>();
+            foreach (var item in carts)
+            {
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    lstPrice.Add(item.Price);
+                }
+            }
+
+            var oneCombineCount = lstPrice.Count / maxCombineCount;
+            for (int i = 0; i < maxCombineCount; i++)
+            {
+                var discount = (100 - GetDiscount(oneCombineCount)) / 100;
+                price += (int)lstPrice.Skip(i).Take(oneCombineCount).Sum(d => d * discount);
+
+                oneCombineCount = lstPrice.Count - oneCombineCount;
             }
 
             return price;
